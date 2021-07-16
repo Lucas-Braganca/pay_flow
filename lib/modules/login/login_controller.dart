@@ -15,7 +15,7 @@ class LoginController {
     try {
       final response = await _googleSignIn.signIn();
       final user =
-          UserModel(name: response!.displayName!, photoUrl: response!.photoUrl);
+          UserModel(name: response!.displayName!, photoUrl: response.photoUrl);
 
       authController.setUser(context, user);
       print(response);
