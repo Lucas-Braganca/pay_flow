@@ -6,13 +6,13 @@ import 'package:image_picker/image_picker.dart';
 import 'package:pay_flow/modules/barcode_scanner/barcode_scanner_status.dart';
 
 class BarcodeScannerController {
-
-  final statusNotifier = ValueNotifier<BarcodeScannerStatus>(BarcodeScannerStatus());
+  final statusNotifier =
+      ValueNotifier<BarcodeScannerStatus>(BarcodeScannerStatus());
 
   final barcodeScanner = GoogleMlKit.vision.barcodeScanner();
 
-BarcodeScannerStatus get status => statusNotifier.value;
-set status(BarcodeScannerStatus status) => statusNotifier.value = status;
+  BarcodeScannerStatus get status => statusNotifier.value;
+  set status(BarcodeScannerStatus status) => statusNotifier.value = status;
 
   void getAvailableCameras() async {
     try {
@@ -47,7 +47,7 @@ set status(BarcodeScannerStatus status) => statusNotifier.value = status;
 
       if (barcode != null && status.barcode.isEmpty) {
         status = BarcodeScannerStatus.barcode(barcode);
-        status.cameraController!.dispose();
+        if (status.cameraController != null) status.cameraController!.dispose();
       } else {
         getAvailableCameras();
       }
@@ -64,7 +64,7 @@ set status(BarcodeScannerStatus status) => statusNotifier.value = status;
     final inputImage = InputImage.fromFilePath(response!.path);
     scannerBarCode(inputImage);
   }
-  
+
   void scanWithCamera() {
     Future.delayed(Duration(seconds: 10)).then((value) {
       if (status.cameraController != null) {
@@ -77,54 +77,54 @@ set status(BarcodeScannerStatus status) => statusNotifier.value = status;
   }
 
   void listenCamera() {
+    if(status.cameraController != null)
     if (status.cameraController!.value.isStreamingImages == false)
       status.cameraController!.startImageStream((cameraImage) async {
-          try {
-            final WriteBuffer allBytes = WriteBuffer();
-            for (Plane plane in cameraImage.planes) {
-              allBytes.putUint8List(plane.bytes);
-            }
-            final bytes = allBytes.done().buffer.asUint8List();
-            final Size imageSize = Size(
-                cameraImage.width.toDouble(), cameraImage.height.toDouble());
-            final InputImageRotation imageRotation =
-                InputImageRotation.Rotation_0deg;
-            final InputImageFormat inputImageFormat =
-                InputImageFormatMethods.fromRawValue(cameraImage.format.raw) ??
-                    InputImageFormat.NV21;
-            final planeData = cameraImage.planes.map(
-              (Plane plane) {
-                return InputImagePlaneMetadata(
-                  bytesPerRow: plane.bytesPerRow,
-                  height: plane.height,
-                  width: plane.width,
-                );
-              },
-            ).toList();
-
-            final inputImageData = InputImageData(
-              size: imageSize,
-              imageRotation: imageRotation,
-              inputImageFormat: inputImageFormat,
-              planeData: planeData,
-            );
-            final inputImageCamera = InputImage.fromBytes(
-                bytes: bytes, inputImageData: inputImageData);
-            await Future.delayed(Duration(seconds: 3));   
-            scannerBarCode(inputImageCamera);
-          } catch (e) {
-            print(e);
+        try {
+          final WriteBuffer allBytes = WriteBuffer();
+          for (Plane plane in cameraImage.planes) {
+            allBytes.putUint8List(plane.bytes);
           }
+          final bytes = allBytes.done().buffer.asUint8List();
+          final Size imageSize =
+              Size(cameraImage.width.toDouble(), cameraImage.height.toDouble());
+          final InputImageRotation imageRotation =
+              InputImageRotation.Rotation_0deg;
+          final InputImageFormat inputImageFormat =
+              InputImageFormatMethods.fromRawValue(cameraImage.format.raw) ??
+                  InputImageFormat.NV21;
+          final planeData = cameraImage.planes.map(
+            (Plane plane) {
+              return InputImagePlaneMetadata(
+                bytesPerRow: plane.bytesPerRow,
+                height: plane.height,
+                width: plane.width,
+              );
+            },
+          ).toList();
+
+          final inputImageData = InputImageData(
+            size: imageSize,
+            imageRotation: imageRotation,
+            inputImageFormat: inputImageFormat,
+            planeData: planeData,
+          );
+          final inputImageCamera = InputImage.fromBytes(
+              bytes: bytes, inputImageData: inputImageData);
+          await Future.delayed(Duration(seconds: 3));
+          scannerBarCode(inputImageCamera);
+        } catch (e) {
+          print(e);
+        }
       });
   }
 
-  void dispose(){
+  void dispose() {
     statusNotifier.dispose();
     barcodeScanner.close();
 
-    if(status.showCamera){
+    if (status.showCamera) {
       status.cameraController!.dispose();
     }
   }
-
 }

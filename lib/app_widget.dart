@@ -5,6 +5,7 @@ import 'package:pay_flow/modules/splash/splash_page.dart';
 import 'package:pay_flow/shared/themes/app_colors.dart';
 
 import 'modules/home/home_page.dart';
+import 'modules/insert_boleto/insert_boleto_page.dart';
 import 'modules/login/login_page.dart';
 
 class AppWidget extends StatelessWidget {
@@ -30,7 +31,8 @@ class AppWidget extends StatelessWidget {
         '/splash': (context) => SplashPage(),
         '/home': (context) => HomePage(),
         '/login': (context) => LoginPage(),
-        '/barcode_scanner': (context) => BarcodeScannerPage()
+        '/barcode_scanner': (context) => BarcodeScannerPage(),
+        '/insert_boleto': (context) => InsertBoletoPage()
       },
     );
   }
