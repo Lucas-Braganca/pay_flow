@@ -67,7 +67,8 @@ class _HomePageState extends State<HomePage> {
                     color: AppColors.primary,
                   )),
               BarcodeScannerButton(onTap: (){
-                Navigator.pushNamed(context, '/barcode_scanner');
+                // Navigator.pushNamed(context, '/barcode_scanner');
+                Navigator.pushNamed(context, '/insert_boleto');
               },),
               IconButton(
                   onPressed: () {

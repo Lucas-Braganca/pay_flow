@@ -1,4 +1,4 @@
-import 'package:camera/camera.dart';
+
 
 class BarcodeScannerStatus {
   final bool isCameraAvailable;

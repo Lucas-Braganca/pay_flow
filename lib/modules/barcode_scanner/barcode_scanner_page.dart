@@ -4,8 +4,6 @@ import 'package:pay_flow/modules/barcode_scanner/barcode_scanner_status.dart';
 import 'package:pay_flow/shared/themes/app_colors.dart';
 import 'package:pay_flow/shared/themes/app_text_styles.dart';
 import 'package:pay_flow/shared/widgets/bottom_sheet/bottom_sheet_widget.dart';
-import 'package:pay_flow/shared/widgets/divider_vertical/divider_vertical_widget.dart';
-import 'package:pay_flow/shared/widgets/label_button/label_button.dart';
 import 'package:pay_flow/shared/widgets/set_label_buttons/set_label_buttons.dart';
 
 class BarcodeScannerPage extends StatefulWidget {
@@ -20,7 +18,6 @@ class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     controller.getAvailableCameras();
     controller.statusNotifier.addListener(() {
       if(controller.status.hasBarcode) {
@@ -32,7 +29,6 @@ class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     controller.dispose();
     super.dispose();
   }
