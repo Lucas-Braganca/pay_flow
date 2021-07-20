@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:pay_flow/shared/models/boleto_model.dart';
 import 'package:pay_flow/shared/themes/app_colors.dart';
 import 'package:pay_flow/shared/themes/app_text_styles.dart';
 import 'package:pay_flow/shared/widgets/barcode_scanner/barcode_scanner_button.dart';
+import 'package:pay_flow/shared/widgets/boleto_tile/boleto_tile_widget.dart';
 
 import 'home_controller.dart';
 
@@ -15,7 +17,14 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final homeController = HomeController();
   final pages = [
-    Container(color: Colors.red),
+    Container(
+      child: BoletoTileWidget(
+          data: BoletoModel(
+              barcode: 'ABCD',
+              name: 'Lucas',
+              dueDate: '12/12/2021',
+              value: 12)),
+    ),
     Container(
       color: Colors.blue,
     )
@@ -66,10 +75,12 @@ class _HomePageState extends State<HomePage> {
                     Icons.home,
                     color: AppColors.primary,
                   )),
-              BarcodeScannerButton(onTap: (){
-                // Navigator.pushNamed(context, '/barcode_scanner');
-                Navigator.pushNamed(context, '/insert_boleto');
-              },),
+              BarcodeScannerButton(
+                onTap: () {
+                  // Navigator.pushNamed(context, '/barcode_scanner');
+                  Navigator.pushNamed(context, '/insert_boleto');
+                },
+              ),
               IconButton(
                   onPressed: () {
                     homeController.setPage(1);
