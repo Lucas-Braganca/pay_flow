@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:pay_flow/shared/models/boleto_model.dart';
+import 'package:pay_flow/modules/extract/extract_page.dart';
+import 'package:pay_flow/modules/meu_boletos/meus_boletos_page.dart';
+import 'package:pay_flow/shared/models/user_model.dart';
 import 'package:pay_flow/shared/themes/app_colors.dart';
 import 'package:pay_flow/shared/themes/app_text_styles.dart';
 import 'package:pay_flow/shared/widgets/barcode_scanner/barcode_scanner_button.dart';
-import 'package:pay_flow/shared/widgets/boleto_tile/boleto_tile_widget.dart';
 
 import 'home_controller.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  final UserModel user;
+
+  const HomePage({
+    Key? key,
+    required this.user,
+  }) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -16,19 +22,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final homeController = HomeController();
-  final pages = [
-    Container(
-      child: BoletoTileWidget(
-          data: BoletoModel(
-              barcode: 'ABCD',
-              name: 'Lucas',
-              dueDate: '12/12/2021',
-              value: 12)),
-    ),
-    Container(
-      color: Colors.blue,
-    )
-  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,7 +36,8 @@ class _HomePageState extends State<HomePage> {
                   style: TextStyles.titleRegular,
                   children: [
                     TextSpan(
-                        text: 'Lucas', style: TextStyles.titleBoldBackground)
+                        text: widget.user.name,
+                        style: TextStyles.titleBoldBackground)
                   ])),
               subtitle: Text('Mantenha suas contas em dia',
                   style: TextStyles.captionShape),
@@ -52,46 +46,60 @@ class _HomePageState extends State<HomePage> {
                 width: 48,
                 decoration: BoxDecoration(
                     color: Colors.black,
-                    borderRadius: BorderRadius.circular(5)),
+                    borderRadius: BorderRadius.circular(5),
+                    image: DecorationImage(
+                        image: NetworkImage(widget.user.photoUrl!))),
               ),
             ),
           ),
         ),
         preferredSize: Size.fromHeight(152),
       ),
-      body: pages[homeController.currentPage],
+      body: [
+        MeusBoletosPage(
+          key: UniqueKey(),
+        ),
+        ExtractPage(
+          key: UniqueKey(),
+        ),
+      ][homeController.currentPage],
       bottomNavigationBar: Container(
-          height: 90,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              IconButton(
-                  onPressed: () {
-                    print('clicou home');
-                    homeController.setPage(0);
-                    setState(() {});
-                  },
-                  icon: Icon(
-                    Icons.home,
-                    color: AppColors.primary,
-                  )),
-              BarcodeScannerButton(
-                onTap: () {
-                  // Navigator.pushNamed(context, '/barcode_scanner');
-                  Navigator.pushNamed(context, '/insert_boleto');
+        height: 90,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            IconButton(
+                onPressed: () {
+                  homeController.setPage(0);
+                  setState(() {});
                 },
-              ),
-              IconButton(
-                  onPressed: () {
-                    homeController.setPage(1);
-                    setState(() {});
-                  },
-                  icon: Icon(
-                    Icons.description_outlined,
-                    color: AppColors.body,
-                  )),
-            ],
-          )),
+                icon: Icon(
+                  Icons.home,
+                  color: homeController.currentPage == 0
+                      ? AppColors.primary
+                      : AppColors.body,
+                )),
+            BarcodeScannerButton(
+              onTap: () async {
+                await Navigator.pushNamed(context, '/barcode_scanner');
+                setState(() {});
+                // Navigator.pushNamed(context, '/insert_boleto');
+              },
+            ),
+            IconButton(
+                onPressed: () {
+                  homeController.setPage(1);
+                  setState(() {});
+                },
+                icon: Icon(
+                  Icons.description_outlined,
+                  color: homeController.currentPage == 1
+                      ? AppColors.primary
+                      : AppColors.body,
+                )),
+          ],
+        ),
+      ),
     );
   }
 }
